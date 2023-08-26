@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitLab Page with Dynamic Links</title>
+</head>
+<body>
+  <h1>Playwright Reports</h1>
+  <div id="links-container"></div>
+
+  <script>
+    // List of the subdirectories in playwright-reports
+    const reports = [
+      '123',
+      'test',
+      'hello-world1'
+    ];
+
+    // Function to create the links
+    function generateLinks() {
+      const container = document.getElementById('links-container');
+      reports.forEach(report => {
+        const link = document.createElement('a');
+        link.href = `/playwright-reports/${report}/index.html`;
+        link.textContent = `Report: ${report}`;
+        container.appendChild(link);
+        container.appendChild(document.createElement('br'));
+      });
+    }
+
+    // Call the function on page load
+    window.addEventListener('DOMContentLoaded', generateLinks);
+  </script>
+</body>
+</html>
