@@ -1,0 +1,10 @@
+services:
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.37.0-jammy
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: sh -c "echo 'Running command:' && echo 'yarn ${TEST_SCRIPT}' && yarn ${TEST_SCRIPT}"
+    environment:
+      # CI VARIABLES
+      - CI=true
