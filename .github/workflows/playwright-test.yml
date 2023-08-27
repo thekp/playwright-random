@@ -1,42 +1,52 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
-  schedule:
-    - cron: '0 */2 * * *'
+    branches: [main, master]
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18
-    - name: Install dependencies
-      run: yarn
-    - name: Install Playwright Browsers
-      run: yarn playwright install --with-deps
-    - name: Run Playwright tests
-      run: yarn playwright test
-    - uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
-
-    ## New addition
-    - name: Prepare GitHub Pages
-      run: |
-        REPORT_UNIQUE_ID=${{ github.run_id }}
-        mkdir -p playwright-reports/${REPORT_UNIQUE_ID}
-        cp -r playwright-report/* playwright-reports/${REPORT_UNIQUE_ID}
-        git config user.name "GitHub Actions"
-        git config user.email "github-actions@users.noreply.github.com"
-        git checkout -b gh-pages || git checkout gh-pages
-        git add playwright-reports/${REPORT_UNIQUE_ID}
-        git commit -m "Update Playwright report for run ID ${{ github.run_id }}"
-        git push -u origin gh-pages
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: yarn
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps
+      - name: Generate unique ID
+        id: generate_uid
+        run: echo "::set-output name=uid::$(date +'%Y%m%d%H%M%S')-$(echo $GITHUB_RUN_ID)"
+      - name: Run Playwright tests
+        run: yarn playwright test
+      - name: Prepare report folder
+        run: |
+          mkdir -p playwright-report-${{ steps.generate_uid.outputs.uid }}
+          cp -r playwright-report/* playwright-report-${{ steps.generate_uid.outputs.uid }}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report-${{ steps.generate_uid.outputs.uid }}/
+          retention-days: 30
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+          path: gh-pages
+      - name: Commit and push report
+        env:
+          THEKP_AUTH: ${{ secrets.THEKP_AUTH }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          cd docs
+          cp -r ../playwright-report-${{ steps.generate_uid.outputs.uid }} ./
+          git config user.name "thekp"
+          git config user.email "thekp97@gmail.com"
+          git remote set-url origin https://${{ secrets.GH_PAT }}@github.com/thekp/playwright-random.git
+          git add .
+          git commit -m "Playwright report: ${{ steps.generate_uid.outputs.uid }}"
+          git push origin gh-pages
