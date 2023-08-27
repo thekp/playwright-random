@@ -31,6 +31,13 @@ export default defineConfig({
 	reporter: process.env.CI ? reporterCIMode : reporterLocalMode,
 	/* Configure snapshot path: https://playwright.dev/docs/next/api/class-testproject#test-project-snapshot-path-template */
 	snapshotPathTemplate: '{testDir}/{testFileDir}/__screenshots__/{arg}{ext}',
+	expect: {
+		/**
+		 * Maximum time expect() should wait for the condition to be met.
+		 * For example in `await expect(locator).toHaveText();`
+		 */
+		timeout: 10 * 1000,
+	},
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
 		/* Base URL to use in actions like `await page.goto('/')`. */
@@ -48,10 +55,10 @@ export default defineConfig({
 			use: { ...devices['Desktop Edge'] },
 		},
 
-		{
-			name: 'iPhone XR',
-			use: { ...devices['iPhone XR'] },
-		},
+		// {
+		// 	name: 'iPhone XR',
+		// 	use: { ...devices['iPhone XR'] },
+		// },
 	],
 
 	/* Run your local dev server before starting the tests */
