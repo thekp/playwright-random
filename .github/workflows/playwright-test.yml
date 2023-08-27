@@ -37,15 +37,7 @@ jobs:
         with:
           ref: gh-pages
           path: gh-pages
-      - name: Commit and push report
-        env:
-          THEKP_AUTH: ${{ secrets.THEKP_AUTH }}
-          GH_PAT: ${{ secrets.GH_PAT }}
-        run: |
-          cd docs
-          git config user.name "thekp"
-          git config user.email "thekp97@gmail.com"
-          git remote set-url origin https://${{ secrets.GH_PAT }}@github.com/thekp/playwright-random.git
-          git add .
-          git commit -m "Playwright report: ${{ steps.generate_uid.outputs.uid }}"
-          git push origin gh-pages
+      - name: Commit & Push changes
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.THEKP_AUTH }}
