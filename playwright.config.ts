@@ -19,7 +19,7 @@ export default defineConfig({
 	testDir: './src/tests',
 	/* Run tests in files in parallel */
 	/* Maximum time one test can run for. */
-	timeout: (process.env.CI ? 45 : 30) * 1000,
+	timeout: 60 * 1000,
 	fullyParallel: true,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !!process.env.CI,
@@ -30,7 +30,7 @@ export default defineConfig({
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: process.env.CI ? reporterCIMode : reporterLocalMode,
 	/* Configure snapshot path: https://playwright.dev/docs/next/api/class-testproject#test-project-snapshot-path-template */
-	snapshotPathTemplate: '{testDir}/{testFileDir}/__screenshots__/{arg}{ext}',
+	snapshotPathTemplate: '{testDir}/{testFileDir}/__screenshots__/{projectName}/{arg}{ext}',
 	expect: {
 		/**
 		 * Maximum time expect() should wait for the condition to be met.
@@ -55,10 +55,10 @@ export default defineConfig({
 			use: { ...devices['Desktop Edge'] },
 		},
 
-		// {
-		// 	name: 'iPhone XR',
-		// 	use: { ...devices['iPhone XR'] },
-		// },
+		{
+			name: 'iPhone XR',
+			use: { ...devices['iPhone XR'] },
+		},
 	],
 
 	/* Run your local dev server before starting the tests */
