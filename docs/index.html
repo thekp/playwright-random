@@ -22,7 +22,7 @@
       const container = document.getElementById('links-container');
       reports.forEach(report => {
         const link = document.createElement('a');
-        link.href = `/playwright-reports/${report}/index.html`;
+        link.href = `./playwright-reports/${report}/index.html`;
         link.textContent = `Report: ${report}`;
         container.appendChild(link);
         container.appendChild(document.createElement('br'));

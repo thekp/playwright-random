@@ -6,7 +6,4 @@ node_modules/
 /playwright/.cache/
 
 # docs
-/docs/
-/test-results/
-/playwright-report/
-/playwright/.cache/
+*.pdf
